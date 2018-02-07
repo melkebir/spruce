@@ -75,7 +75,7 @@ void CnaEnumerate::enumerate(int limit,
     if (logInterval != 0)
     {
       snprintf(buf, 1024, "%s_S%d.log", logFilename.c_str(), count);
-      outLog = std::ofstream(buf);
+      outLog.open(buf);
       if (!outLog.good())
       {
         std::cerr << "Error opening file '" << buf << "' for writing." << std::endl;

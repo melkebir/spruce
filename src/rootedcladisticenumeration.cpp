@@ -407,13 +407,20 @@ bool RootedCladisticEnumeration::finalize(SubDigraph& T)
   
   if (_logInterval > 0 && _logTimer.realTime() >= _logInterval)
   {
-    static int previousCount;
-    if (_counter == 1)
+    static int previousCount = -1;
+    static int logCount = 0;
+    if (_counter < previousCount || previousCount == -1)
     {
       previousCount = 0;
+      logCount = 0;
+      _outLog << "time" << "\t" 
+              << "trees" << "\t" 
+              << "delta" << "\t" 
+              << "max_trees" << "\t"
+              << "SNVs" << std::endl;
     }
-//    int treeSize = _result.empty() ? 1 : _result.front().size() + 1;
-    _outLog << _counter << "\t"
+    _outLog << ++logCount * _logInterval << "\t"
+            << _counter << "\t"
             << _counter - previousCount << "\t"
             << _result.size() << "\t"
             << newSizeT << std::endl;
