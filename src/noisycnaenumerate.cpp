@@ -41,8 +41,11 @@ void NoisyCnaEnumerate::enumerate(int limit,
                                   int state_tree_limit,
                                   bool monoclonal,
                                   int offset,
-                                  const IntSet& whiteList)
+                                  const IntSet& whiteList,
+                                  const std::string& logFilename,
+                                  int logInterval)
 {
+  char buf[1024];
   const int n = _M.n();
   
   _sols.clear();
@@ -62,7 +65,23 @@ void NoisyCnaEnumerate::enumerate(int limit,
         std::cerr << std::endl << "State tree combination " << ++count << "/" << _combinations << " ..." << std::endl;
       }
     }
-    solve(pi, limit, timeLimit, threads, state_tree_limit, monoclonal, whiteList);
+    
+    std::ofstream outLog;
+    if (logInterval != 0)
+    {
+      snprintf(buf, 1024, "%s_S%d.log", logFilename.c_str(), count);
+      outLog = std::ofstream(buf);
+      if (!outLog.good())
+      {
+        std::cerr << "Error opening file '" << buf << "' for writing." << std::endl;
+        exit(1);
+      }
+    }
+    
+    solve(pi, limit, timeLimit,
+          threads, state_tree_limit,
+          monoclonal, whiteList,
+          outLog, logInterval);
   } while (next(state_tree_limit, offset, pi));
 }
   
@@ -239,7 +258,9 @@ void NoisyCnaEnumerate::solve(const StlIntVector& pi,
                               int threads,
                               int state_tree_limit,
                               bool monoclonal,
-                              const IntSet& whiteList)
+                              const IntSet& whiteList,
+                              std::ostream& outLog,
+                              int logInterval)
 {
   RealTensor F, F_lb, F_ub;
   StateTreeVector S;
@@ -277,7 +298,8 @@ void NoisyCnaEnumerate::solve(const StlIntVector& pi,
                                             _treeSize,
                                             monoclonal,
                                             monoclonal && !_purityValues.empty(),
-                                            remappedWhiteList);
+                                            remappedWhiteList,
+                                            outLog, logInterval);
   enumerate.run();
   
   if (enumerate.objectiveValue() >= _treeSize)

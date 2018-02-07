@@ -16,9 +16,12 @@ RootedCladisticNoisyEnumeration::RootedCladisticNoisyEnumeration(const RootedCla
                                                                  int lowerbound,
                                                                  bool monoclonal,
                                                                  bool fixTrunk,
-                                                                 const IntSet& whiteList)
+                                                                 const IntSet& whiteList,
+                                                                 std::ostream& outLog,
+                                                                 int logInterval)
   : RootedCladisticEnumeration(G, limit, timeLimit, threads,
-                               lowerbound, monoclonal, fixTrunk, whiteList)
+                               lowerbound, monoclonal, fixTrunk, whiteList,
+                               outLog, logInterval)
   , _noisyG(G)
 {
 }

@@ -17,7 +17,9 @@ RootedCladisticEnumeration::RootedCladisticEnumeration(const RootedCladisticAnce
                                                        int lowerbound,
                                                        bool monoclonal,
                                                        bool fixTrunk,
-                                                       const IntSet& whiteList)
+                                                       const IntSet& whiteList,
+                                                       std::ostream& outLog,
+                                                       int logInterval)
   : _G(G)
   , _result()
   , _objectiveValue(0)
@@ -33,6 +35,9 @@ RootedCladisticEnumeration::RootedCladisticEnumeration(const RootedCladisticAnce
   , _monoclonal(monoclonal)
   , _fixTrunk(fixTrunk)
   , _whiteList(whiteList)
+  , _outLog(outLog)
+  , _logInterval(logInterval)
+  , _logTimer()
 {
 }
   
@@ -398,6 +403,22 @@ bool RootedCladisticEnumeration::finalize(SubDigraph& T)
   for (SubArcIt a_cidj(TT); a_cidj != lemon::INVALID; ++a_cidj)
   {
     res.push_back(a_cidj);
+  }
+  
+  if (_logInterval > 0 && _logTimer.realTime() >= _logInterval)
+  {
+    static int previousCount;
+    if (_counter == 1)
+    {
+      previousCount = 0;
+    }
+//    int treeSize = _result.empty() ? 1 : _result.front().size() + 1;
+    _outLog << _counter << "\t"
+            << _counter - previousCount << "\t"
+            << _result.size() << "\t"
+            << newSizeT << std::endl;
+    previousCount = _counter;
+    _logTimer.restart();
   }
   
   return _result.size() >= _limit;

@@ -53,8 +53,11 @@ void CnaEnumerate::enumerate(int limit,
                              int timeLimit,
                              int threads,
                              bool monoclonal,
-                             const IntSet& whiteList)
+                             const IntSet& whiteList,
+                             const std::string& logFilename,
+                             int logInterval)
 {
+  char buf[1024];
   const int n = _M.n();
   
   _sols.clear();
@@ -67,7 +70,22 @@ void CnaEnumerate::enumerate(int limit,
     {
       std::cerr << std::endl << "State tree combination " << ++count << "/" << _combinations << " ..." << std::endl;
     }
-    solve(pi, limit, timeLimit, threads, monoclonal, whiteList);
+    
+    std::ofstream outLog;
+    if (logInterval != 0)
+    {
+      snprintf(buf, 1024, "%s_S%d.log", logFilename.c_str(), count);
+      outLog = std::ofstream(buf);
+      if (!outLog.good())
+      {
+        std::cerr << "Error opening file '" << buf << "' for writing." << std::endl;
+        exit(1);
+      }
+    }
+    
+    solve(pi, limit, timeLimit,
+          threads, monoclonal, whiteList,
+          outLog, logInterval);
 //    for (int c = 0; c < n; ++c)
 //    {
 //      std::cout << pi[c] << " ";
@@ -158,7 +176,9 @@ void CnaEnumerate::solve(const StlIntVector& pi,
                          int timeLimit,
                          int threads,
                          bool monoclonal,
-                         const IntSet& whiteList)
+                         const IntSet& whiteList,
+                         std::ostream& outLog,
+                         int logInterval)
 {
   // construct F and S
   RealTensor F;
@@ -177,7 +197,8 @@ void CnaEnumerate::solve(const StlIntVector& pi,
                                        _treeSize,
                                        monoclonal,
                                        false,
-                                       whiteList);
+                                       whiteList,
+                                       outLog, logInterval);
   enumerate.run();
   
   if (g_verbosity >= VERBOSE_ESSENTIAL)

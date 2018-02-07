@@ -103,6 +103,8 @@ void enumerate(int limit,
                const std::string& cliqueFile,
                int offset,
                const IntSet& whiteList,
+               const std::string& logFilename,
+               int logInterval,
                SolutionSet& sols)
 {
   CharacterMatrix M;
@@ -185,7 +187,9 @@ void enumerate(int limit,
   
   NoisyCnaEnumerate alg(M, purityValues, *pComp, lowerbound);
   alg.init(state_tree_limit);
-  alg.enumerate(limit, timeLimit, threads, state_tree_limit, monoclonal, offset, whiteList);
+  alg.enumerate(limit, timeLimit, threads,
+                state_tree_limit, monoclonal, offset, whiteList,
+                logFilename, logInterval);
 
   sols = alg.sols();
   delete pComp;
@@ -212,6 +216,8 @@ int main(int argc, char** argv)
   int offset = 0;
   int verbosityLevel = 1;
   std::string whiteListString;
+  std::string logFilename;
+  int logInterval = 30;
   
   lemon::ArgParser ap(argc, argv);
   ap.boolOption("-version", "Show version number")
@@ -229,6 +235,8 @@ int main(int argc, char** argv)
     .refOption("r", "Seed for random number generator", random_seed)
     .refOption("lb", "Lower bound on #characters in enumerated trees (default: 0)", lowerbound)
     .refOption("w", "Characters that must be present in the solution trees", whiteListString)
+    .refOption("logFile", "File for storing benchmarking information", logFilename)
+    .refOption("logInterval", "Logging interval in seconds (default: 30)", logInterval)
     .other("input_1", "Input file")
     .other("input_2", "Interval file relating SNVs affected by the same CNA");
   ap.parse();
@@ -290,6 +298,8 @@ int main(int argc, char** argv)
             cliqueFile,
             offset,
             whiteList,
+            logFilename,
+            logInterval,
             sols);
   std::cout << sols;
   

@@ -23,7 +23,9 @@ public:
                                   int lowerbound,
                                   bool monoclonal,
                                   bool fixTrunk,
-                                  const IntSet& whiteList);
+                                  const IntSet& whiteList,
+                                  std::ostream& outLog,
+                                  int logInterval);
   
   const RootedCladisticNoisyAncestryGraph& noisyG() const
   {

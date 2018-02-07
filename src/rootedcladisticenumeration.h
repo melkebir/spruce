@@ -35,7 +35,9 @@ public:
                              int lowerbound,
                              bool monoclonal,
                              bool fixTrunk,
-                             const IntSet& whitelist);
+                             const IntSet& whitelist,
+                             std::ostream& outLog,
+                             int logInterval);
   
   virtual ~RootedCladisticEnumeration();
   
@@ -330,6 +332,10 @@ protected:
   bool _fixTrunk;
   
   const IntSet& _whiteList;
+  
+  std::ostream& _outLog;
+  int _logInterval;
+  lemon::Timer _logTimer;
 };
   
 } // namespace gm

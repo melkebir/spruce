@@ -29,7 +29,9 @@ public:
                  int timeLimit,
                  int threads,
                  bool monoclonal,
-                 const IntSet& whiteList);
+                 const IntSet& whiteList,
+                 const std::string& logFilename,
+                 int logInterval);
   
   const SolutionSet& sols() const
   {
@@ -60,7 +62,9 @@ private:
              int timeLimit,
              int threads,
              bool monoclonal,
-             const IntSet& whiteList);
+             const IntSet& whiteList,
+             std::ostream& outLog,
+             int logInterval);
   
   void init(const StlIntVector& pi,
             RealTensor& F,
