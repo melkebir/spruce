@@ -69,7 +69,7 @@ void NoisyCnaEnumerate::enumerate(int limit,
     std::ofstream outLog;
     if (logInterval != 0)
     {
-      snprintf(buf, 1024, "%s_S%d.log", logFilename.c_str(), count);
+      snprintf(buf, 1024, "%s_S%d.log", logFilename.c_str(), count + offset);
       outLog.open(buf);
       if (!outLog.good())
       {

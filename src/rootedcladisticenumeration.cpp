@@ -419,7 +419,7 @@ bool RootedCladisticEnumeration::finalize(SubDigraph& T)
               << "max_trees" << "\t"
               << "SNVs" << std::endl;
     }
-    _outLog << ++logCount * _logInterval << "\t"
+    _outLog << _timer.realTime() << "\t"
             << _counter << "\t"
             << _counter - previousCount << "\t"
             << _result.size() << "\t"
